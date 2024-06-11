@@ -1,19 +1,25 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
 import { AppDataSource } from "../config/ormconfig";
 import { Project } from "../entity/Project";
-import { User } from "../entity/User";
 import { Like } from "typeorm";
-
 export class ProjectController {
   static async getAllProjects(req: Request, res: Response) {
     try {
       const { projectName } = req.body;
       const projectRepository = AppDataSource.getRepository(Project);
       const searchCriteria: any = { is_active: true };
+      if (req.user) {
+        searchCriteria.created_by = req.user.id;
+      } else {
+        return res.status(401).json({
+          status_code: 401,
+          success: false,
+          message: "Unauthorized access",
+        });
+      }
 
       if (projectName) {
-        searchCriteria.projectName = Like(`%${projectName}%`);;
+        searchCriteria.projectName = Like(`%${projectName}%`);
       }
       const projects = await projectRepository.find({ where: searchCriteria });
 
@@ -138,7 +144,19 @@ export class ProjectController {
         status_code: 200,
         success: true,
         message: "Project updated successfully",
-        project,
+        project: {
+          id: project.id,
+          projectName: project.projectName,
+          startDate: project.startDate,
+          endDate: project.endDate,
+          status: project.status,
+          deleted_at: null,
+          created_at: project.created_at,
+          updated_at: project.updated_at,
+          created_by: project.created_by ? project.created_by : null,
+          updated_by: project.updated_by ? project.updated_by.id : null,
+          is_active: project.is_active,
+        },
       });
     } catch (error) {
       res.status(500).json({
@@ -170,7 +188,7 @@ export class ProjectController {
       project.deleted_at = new Date();
 
       if (req.user) {
-        project.updated_by = req.user;
+        project.deleted_by = req.user;
       }
 
       await projectRepository.save(project);
@@ -189,6 +207,4 @@ export class ProjectController {
       });
     }
   }
-
-  // Implement updateProject, deleteProject, and searchProjects similarly
 }

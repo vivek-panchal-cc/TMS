@@ -9,10 +9,10 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.post("/index", checkRole(["admin"]), LabelController.getAllLabels);
-router.post("/add", labelValidation, validationMiddleware, checkRole(["admin"]), LabelController.createLabel);
-router.get("/details/:id", checkRole(["admin"]), LabelController.getLabelById);
-router.put("/update/:id", labelValidation, validationMiddleware, checkRole(["admin"]), LabelController.updateLabel);
-router.delete("/delete/:id", checkRole(["admin"]), LabelController.deleteLabel);
+router.post("/index", LabelController.getAllLabels);
+router.post("/add", labelValidation, validationMiddleware, LabelController.createLabel);
+router.get("/details/:id", LabelController.getLabelById);
+router.put("/update/:id", labelValidation, validationMiddleware, LabelController.updateLabel);
+router.delete("/delete/:id", LabelController.deleteLabel);
 
 export default router;

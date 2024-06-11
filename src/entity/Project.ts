@@ -29,4 +29,8 @@ export class Project extends BaseEntity {
   @ManyToOne(() => User)
   @JoinColumn({ name: "created_by" })
   created_by: User;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "deleted_by" })
+  deleted_by: User;
 }

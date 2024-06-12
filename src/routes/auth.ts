@@ -69,7 +69,7 @@ router.post(
       user.lastName = lastName;
       user.dob = dob;
       user.address = address;
-      user.role = role;
+      user.role = role || "user";
 
       await userRepository.save(user);
       res.status(201).json({

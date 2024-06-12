@@ -1,6 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
-import { IsEmail, IsNotEmpty, IsNumber, Min, Length, IsDateString } from "class-validator";
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+  Length,
+  IsDateString,
+} from "class-validator";
 import { IsDateFormat } from "../validators/dateFormatValidator";
 
 @Entity()
@@ -39,7 +46,7 @@ export class User extends BaseEntity {
   @IsNotEmpty({ message: "Address is required" }) // Validate not empty
   address: string;
 
-  @Column()
+  @Column({ default: "user" })
   @IsNotEmpty()
   role: string;
 

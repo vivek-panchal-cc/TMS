@@ -34,3 +34,18 @@ export const labelValidation = [
     .matches(/^#([0-9A-F]{3}|[0-9A-F]{6})$/i)
     .withMessage("Color must be a valid hex code"),
 ];
+
+export const taskValidation = [
+  body("task_name").notEmpty().withMessage("Task name is required"),
+  body("project_id").notEmpty().withMessage("Project ID is required"),
+  body("label_id").notEmpty().withMessage("Label ID is required"),
+  body("assigned_user").notEmpty().withMessage("Assigned user is required"),
+  body("start_date")
+    .isDate()
+    .withMessage("Start date is required and must be a valid date"),
+  body("end_date")
+    .isDate()
+    .withMessage("End date is required and must be a valid date"),
+  body("status").notEmpty().withMessage("Status is required"),
+  body('attachment').optional().isString().withMessage('Attachment must be a string'),
+];

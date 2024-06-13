@@ -1,14 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import {
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   Min,
   Length,
   IsDateString,
 } from "class-validator";
-import { IsDateFormat } from "../validators/dateFormatValidator";
 
 @Entity()
 export class User extends BaseEntity {
@@ -52,4 +50,8 @@ export class User extends BaseEntity {
 
   @Column({ default: 0 })
   tokenVersion: number;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "deleted_by" })
+  deleted_by: User;
 }

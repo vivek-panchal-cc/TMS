@@ -12,36 +12,6 @@ import { validationMiddleware } from "../middleware/validationMiddleware";
 
 const router = Router();
 
-// router.post("/register", async (req: Request, res: Response) => {
-//   const { email, password, firstName, lastName, age, address } = req.body;
-//   const user = new User();
-//   user.email = email;
-//   user.password = password;
-//   user.firstName = firstName;
-//   user.lastName = lastName;
-//   user.age = age;
-//   user.address = address;
-
-//   // Validate the User entity
-//   const errors: ValidationError[] = await validate(user);
-//   if (errors.length > 0) {
-//     return res.status(400).send(errors);
-//   }
-
-//   const userRepository = AppDataSource.getRepository(User);
-//   const existingUser = await userRepository.findOneBy({ email });
-
-//   if (existingUser) {
-//     return res.status(400).send("User already exists");
-//   }
-
-//   const hashedPassword = await bcrypt.hash(password, 10);
-//   user.password = hashedPassword;
-
-//   await userRepository.save(user);
-//   res.status(201).send("User registered successfully");
-// });
-
 router.post(
   "/register",
   registerValidation,

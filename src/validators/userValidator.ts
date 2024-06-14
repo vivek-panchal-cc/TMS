@@ -36,7 +36,7 @@ export const labelValidation = [
 ];
 
 export const taskValidation = [
-  body("task_name").notEmpty().withMessage("Task name is required"),
+  body("taskName").notEmpty().withMessage("Task name is required"),
   body("project_id").notEmpty().withMessage("Project ID is required"),
   body("label_id").notEmpty().withMessage("Label ID is required"),
   body("assigned_user").notEmpty().withMessage("Assigned user is required"),

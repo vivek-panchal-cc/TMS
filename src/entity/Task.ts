@@ -16,7 +16,7 @@ export class Task extends BaseEntity {
   id: string;
 
   @Column()
-  task_name: string;
+  taskName: string;
 
   @ManyToOne(() => Project)
   @JoinColumn({ name: "project_id" })

@@ -4,11 +4,12 @@ import { Task } from "../entity/Task";
 import { Project } from "../entity/Project";
 import { Label } from "../entity/Label";
 import { User } from "../entity/User";
+import { Like } from "typeorm";
 
 export class TaskController {
   static async createTask(req: Request, res: Response) {
     const {
-      task_name,
+      taskName,
       project_id,
       label_id,
       assigned_user,
@@ -47,7 +48,7 @@ export class TaskController {
       }
 
       const task = taskRepository.create({
-        task_name,
+        taskName,
         project,
         label,
         assignedUser,
@@ -106,7 +107,7 @@ export class TaskController {
 
       const transformedTask = {
         id: task.id,
-        task_name: task.task_name,
+        taskName: task.taskName,
         start_date: task.start_date,
         end_date: task.end_date,
         status: task.status,
@@ -138,7 +139,7 @@ export class TaskController {
   static async updateTask(req: Request, res: Response) {
     const { id } = req.params;
     const {
-      task_name,
+      taskName,
       project_id,
       label_id,
       assigned_user,
@@ -189,7 +190,7 @@ export class TaskController {
         });
       }
 
-      task.task_name = task_name;
+      task.taskName = taskName;
       task.project = project;
       task.label = label;
       task.assignedUser = assignedUser;
@@ -207,7 +208,7 @@ export class TaskController {
 
       const responseTask = {
         id: task.id,
-        task_name: task.task_name,
+        taskName: task.taskName,
         start_date: task.start_date,
         end_date: task.end_date,
         status: task.status,
@@ -293,7 +294,7 @@ export class TaskController {
       });
     }
 
-    const { task_name, start_date, end_date } = req.body;
+    const { taskName, start_date, end_date } = req.body;
 
     try {
       const taskRepository = AppDataSource.getRepository(Task);
@@ -306,9 +307,9 @@ export class TaskController {
         .leftJoinAndSelect("task.assignedUser", "assignedUser")
         .leftJoinAndSelect("task.assignedBy", "assignedBy");
 
-      if (task_name) {
-        queryBuilder.andWhere("LOWER(task.task_name) LIKE LOWER(:task_name)", {
-          task_name: `%${task_name}%`,
+      if (taskName) {
+        queryBuilder.andWhere("LOWER(task.taskName) LIKE LOWER(:taskName)", {
+          taskName: `%${taskName}%`,
         });
       }
 
@@ -324,7 +325,7 @@ export class TaskController {
 
       const transformedTasks = tasks.map((task) => ({
         id: task.id,
-        task_name: task.task_name,
+        taskName: task.taskName,
         start_date: task.start_date,
         end_date: task.end_date,
         status: task.status,
@@ -347,6 +348,42 @@ export class TaskController {
         success: true,
         message: "Tasks fetched successfully",
         tasks: transformedTasks,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status_code: 500,
+        success: false,
+        message: "Failed to fetch tasks",
+        error,
+      });
+    }
+  }
+
+  static async getAllTasks(req: Request, res: Response) {
+    try {
+      const { taskName } = req.body;
+      const taskRepository = AppDataSource.getRepository(Task);
+      const searchCriteria: any = { is_active: true };
+      if (req.user) {
+        searchCriteria.created_by = req.user.id;
+      } else {
+        return res.status(401).json({
+          status_code: 401,
+          success: false,
+          message: "Unauthorized access",
+        });
+      }
+
+      if (taskName) {
+        searchCriteria.taskName = Like(`%${taskName}%`);
+      }
+      const tasks = await taskRepository.find({ where: searchCriteria });
+
+      res.status(200).json({
+        status_code: 200,
+        success: true,
+        message: "Tasks fetched successfully",
+        tasks,
       });
     } catch (error) {
       res.status(500).json({

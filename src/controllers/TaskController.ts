@@ -5,6 +5,8 @@ import { Project } from "../entity/Project";
 import { Label } from "../entity/Label";
 import { User } from "../entity/User";
 import { Like } from "typeorm";
+import { Notification } from "../entity/Notification";
+import NotificationController from "./NotificationController";
 
 export class TaskController {
   static async createTask(req: Request, res: Response) {
@@ -63,6 +65,21 @@ export class TaskController {
       }
 
       await taskRepository.save(task);
+      // Create a notification for the assigned user
+      await NotificationController.createNotification(
+        assigned_user,
+        "Task ADDED",
+        `Task "${taskName}" has been added and assigned by ${req.user.firstName} ${req.user.lastName}.`,
+        "add-task",
+        "#55A865"
+      );
+      await NotificationController.createNotification(
+        req.user.id,
+        "Task CREATED",
+        `Task "${taskName}" has been created and assigned to ${assignedUser.firstName} ${assignedUser.lastName}.`,
+        "created-task",
+        "#55A865"
+      );
       res.status(201).json({
         status_code: 201,
         success: true,
@@ -190,6 +207,20 @@ export class TaskController {
         });
       }
 
+      const oldStatus = task.status;
+      const oldStartDate = task.start_date;
+      const oldEndDate = task.end_date;
+      const oldAssignedUser = task.assignedUser?.id;
+      interface Notification {
+        userId: number;
+        title: string;
+        message: string;
+        type: string;
+        display_color: string;
+      }
+
+      let notifications: Notification[] = [];
+
       task.taskName = taskName;
       task.project = project;
       task.label = label;
@@ -204,7 +235,47 @@ export class TaskController {
         task.assignedBy = req.user;
       }
 
+      if (start_date !== oldStartDate || end_date !== oldEndDate) {
+        notifications.push({
+          userId: req.user.id,
+          title: "Task Date Updated",
+          message: `Task "${taskName}" date has been updated.`,
+          type: "schedule-task",
+          display_color: "#B2BEB5",
+        });
+      }
+
+      if (assigned_user !== oldAssignedUser) {
+        notifications.push({
+          userId: assigned_user,
+          title: "Task Assigned",
+          message: `Task "${taskName}" has been assigned to ${assignedUser.firstName} ${assignedUser.lastName}.`,
+          type: "assigned-task",
+          display_color: "#0000FF",
+        });
+      }
+
+      if (status !== oldStatus) {
+        notifications.push({
+          userId: req.user.id,
+          title: "Task Status Changed",
+          message: `Task "${taskName}" status has been changed to "${status}".`,
+          type: "status-update",
+          display_color: "#FFFF9F",
+        });
+      }
+
       await taskRepository.save(task);
+
+      for (const notification of notifications) {
+        await NotificationController.createNotification(
+          notification.userId,
+          notification.title,
+          notification.message,
+          notification.type,
+          notification.display_color
+        );
+      }
 
       const responseTask = {
         id: task.id,

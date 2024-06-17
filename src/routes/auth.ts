@@ -77,7 +77,12 @@ router.post(
       );
       user.tokenVersion = tokenVersion;
       await userRepository.save(user);
-      res.send({ token });
+      res.send({
+        status_code: 200,
+        success: true,
+        message: "User logged in successfully",
+        token,
+      });
     } catch (error) {
       next(error);
     }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import {
   IsEmail,
@@ -7,6 +7,7 @@ import {
   Length,
   IsDateString,
 } from "class-validator";
+import { Notification } from "./Notification";
 
 @Entity()
 export class User extends BaseEntity {
@@ -54,4 +55,7 @@ export class User extends BaseEntity {
   @ManyToOne(() => User)
   @JoinColumn({ name: "deleted_by" })
   deleted_by: User;
+
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
 }

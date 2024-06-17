@@ -68,14 +68,14 @@ export class TaskController {
       // Create a notification for the assigned user
       await NotificationController.createNotification(
         assigned_user,
-        "Task ADDED",
+        "Task Added",
         `Task "${taskName}" has been added and assigned by ${req.user.firstName} ${req.user.lastName}.`,
         "add-task",
         "#55A865"
       );
       await NotificationController.createNotification(
         req.user.id,
-        "Task CREATED",
+        "Task Created",
         `Task "${taskName}" has been created and assigned to ${assignedUser.firstName} ${assignedUser.lastName}.`,
         "created-task",
         "#55A865"

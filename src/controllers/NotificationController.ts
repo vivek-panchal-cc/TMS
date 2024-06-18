@@ -117,7 +117,7 @@ class NotificationController {
       }
 
       notification.is_read = true;
-
+      notification.updated_at = new Date();
       if (req.user) {
         notification.updated_by = req.user;
       }

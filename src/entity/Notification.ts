@@ -6,15 +6,17 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
+  BeforeInsert,
+  PrimaryColumn,
 } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import { Project } from "./Project";
 import { Task } from "./Task";
 import { User } from "./User";
-
+import { ulid } from "ulid";
 @Entity()
 export class Notification extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryColumn()
   id: string;
 
   @ManyToOne(() => User, (user) => user.notifications)
@@ -50,4 +52,9 @@ export class Notification extends BaseEntity {
   @ManyToOne(() => User)
   @JoinColumn({ name: "deleted_by" })
   deleted_by: User;
+
+  @BeforeInsert()
+  generateUlid() {
+    this.id = ulid();
+  }
 }

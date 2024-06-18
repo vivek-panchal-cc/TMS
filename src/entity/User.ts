@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, PrimaryColumn, BeforeInsert } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import {
   IsEmail,
@@ -8,11 +8,11 @@ import {
   IsDateString,
 } from "class-validator";
 import { Notification } from "./Notification";
-
+import { ulid } from "ulid";
 @Entity()
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: number;
+  @PrimaryColumn()
+  id: string;
 
   @Column({ unique: true })
   @IsEmail({}, { message: "Invalid email format" }) // Validate email format
@@ -58,4 +58,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Notification, (notification) => notification.user)
   notifications: Notification[];
+
+  @BeforeInsert()
+  generateUlid() {
+    this.id = ulid();
+  }
 }

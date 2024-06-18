@@ -216,7 +216,7 @@ export class TaskController {
       const oldEndDate = task.end_date;
       const oldAssignedUser = task.assignedUser?.id;
       interface Notification {
-        userId: number;
+        userId: string;
         title: string;
         message: string;
         type: string;

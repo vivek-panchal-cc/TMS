@@ -4,15 +4,17 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  BeforeInsert,
+  PrimaryColumn,
 } from "typeorm";
 import { User } from "./User";
 import { Project } from "./Project";
 import { Label } from "./Label";
 import { BaseEntity } from "./BaseEntity";
-
+import { ulid } from "ulid";
 @Entity()
 export class Task extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryColumn()
   id: string;
 
   @Column()
@@ -60,4 +62,9 @@ export class Task extends BaseEntity {
   @ManyToOne(() => User)
   @JoinColumn({ name: "deleted_by" })
   deleted_by: User;
+
+  @BeforeInsert()
+  generateUlid() {
+    this.id = ulid();
+  }
 }

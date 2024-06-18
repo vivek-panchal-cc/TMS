@@ -7,7 +7,7 @@ import { User } from "../entity/User";
 
 class NotificationController {
   static async createNotification(
-    userId: number,
+    userId: string,
     title: string,
     message: string,
     type: string,

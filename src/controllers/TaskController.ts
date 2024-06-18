@@ -449,15 +449,15 @@ export class TaskController {
       const { taskName } = req.body;
       const taskRepository = AppDataSource.getRepository(Task);
       const searchCriteria: any = { is_active: true };
-      if (req.user) {
-        searchCriteria.created_by = req.user.id;
-      } else {
-        return res.status(401).json({
-          status_code: 401,
-          success: false,
-          message: "Unauthorized access",
-        });
-      }
+      // if (req.user) {
+      //   searchCriteria.created_by = req.user.id;
+      // } else {
+      //   return res.status(401).json({
+      //     status_code: 401,
+      //     success: false,
+      //     message: "Unauthorized access",
+      //   });
+      // }
 
       if (taskName) {
         searchCriteria.taskName = Like(`%${taskName}%`);

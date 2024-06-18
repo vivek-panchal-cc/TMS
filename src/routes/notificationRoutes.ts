@@ -5,8 +5,10 @@ import { authMiddleware } from "../middleware/authMiddleware";
 const router = Router();
 router.use(authMiddleware);
 
-router.get("/notifications", NotificationController.getNotifications);
-router.put('/notifications/:id/mark-as-read', NotificationController.markAsRead);
-router.delete('/notifications/:id/delete-notification', NotificationController.deleteNotification);
+router.get("/index", NotificationController.getNotifications);
+router.put("/:id/mark-as-read", NotificationController.markAsRead);
+router.post("/mark-all-as-read", NotificationController.markAllAsRead);
+router.delete("/:id/delete-notification", NotificationController.deleteNotification);
+router.delete("/delete-all-notifications", NotificationController.deleteAllNotifications);
 
 export default router;

@@ -71,14 +71,18 @@ export class TaskController {
         "Task Added",
         `Task "${taskName}" has been added and assigned by ${req.user.firstName} ${req.user.lastName}.`,
         "add-task",
-        "#55A865"
+        "#55A865",
+        task.id,
+        project_id
       );
       await NotificationController.createNotification(
         req.user.id,
         "Task Created",
         `Task "${taskName}" has been created and assigned to ${assignedUser.firstName} ${assignedUser.lastName}.`,
         "created-task",
-        "#55A865"
+        "#55A865",
+        task.id,
+        project_id
       );
       res.status(201).json({
         status_code: 201,
@@ -217,6 +221,8 @@ export class TaskController {
         message: string;
         type: string;
         display_color: string;
+        task: string;
+        project: string;
       }
 
       let notifications: Notification[] = [];
@@ -242,6 +248,8 @@ export class TaskController {
           message: `Task "${taskName}" date has been updated.`,
           type: "schedule-task",
           display_color: "#B2BEB5",
+          task: task.id,
+          project: task.project.id,
         });
       }
 
@@ -252,6 +260,8 @@ export class TaskController {
           message: `Task "${taskName}" has been assigned to ${assignedUser.firstName} ${assignedUser.lastName}.`,
           type: "assigned-task",
           display_color: "#0000FF",
+          task: task.id,
+          project: task.project.id,
         });
       }
 
@@ -262,6 +272,8 @@ export class TaskController {
           message: `Task "${taskName}" status has been changed to "${status}".`,
           type: "status-update",
           display_color: "#FFFF9F",
+          task: task.id,
+          project: task.project.id,
         });
       }
 
@@ -273,7 +285,9 @@ export class TaskController {
           notification.title,
           notification.message,
           notification.type,
-          notification.display_color
+          notification.display_color,
+          notification.task,
+          notification.project,
         );
       }
 

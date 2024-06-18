@@ -8,6 +8,8 @@ import {
   JoinColumn,
 } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
+import { Project } from "./Project";
+import { Task } from "./Task";
 import { User } from "./User";
 
 @Entity()
@@ -32,6 +34,14 @@ export class Notification extends BaseEntity {
 
   @Column({ default: false })
   is_read: boolean;
+
+  @ManyToOne(() => Project)
+  @JoinColumn({ name: "project_id" })
+  project: Project;
+
+  @ManyToOne(() => Task)
+  @JoinColumn({ name: "task_id" })
+  task: Task;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: "updated_by" })

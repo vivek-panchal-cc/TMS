@@ -20,7 +20,7 @@ app.use("/api/users", user);
 app.use("/api/projects", projectRoutes);
 app.use("/api/labels", labelRoutes);
 app.use("/api/tasks", taskRoutes)
-app.use("/api", notificationRoutes)
+app.use("/api/notifications", notificationRoutes)
 
 app.use(errorHandler);
 

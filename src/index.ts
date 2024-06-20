@@ -7,6 +7,7 @@ import projectRoutes from "./routes/projectRoutes";
 import labelRoutes from "./routes/labelRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
+import commentRoutes from "./routes/commentRoutes";
 import user from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
 
@@ -21,6 +22,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/labels", labelRoutes);
 app.use("/api/tasks", taskRoutes)
 app.use("/api/notifications", notificationRoutes)
+app.use("/api/comments", commentRoutes)
 
 app.use(errorHandler);
 

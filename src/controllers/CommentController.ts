@@ -157,8 +157,8 @@ class CommentController {
       res.status(200).json({
         status_code: 200,
         success: true,
-        message: "Comment edited successfully",
-        comment: existingComment,
+        message: "Comment updated successfully",
+        // comment: existingComment,
       });
     } catch (error) {
       res.status(500).json({

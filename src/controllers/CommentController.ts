@@ -239,11 +239,14 @@ class CommentController {
         order: { created_at: "DESC" },
       });
 
-      const transformedComments = comments.map(comment => ({
+      const transformedComments = comments.map((comment) => ({
         id: comment.id,
         comment: comment.comment,
         user: comment.user.id,
-        taggedUsers: comment.taggedUsers.map(user => user.id),
+        taggedUsers: comment.taggedUsers.map((user) => ({
+          id: user.id,
+          name: `${user.firstName} ${user.lastName}`,
+        })),
       }));
 
       res.status(200).json({

@@ -242,7 +242,10 @@ class CommentController {
       const transformedComments = comments.map((comment) => ({
         id: comment.id,
         comment: comment.comment,
-        user: comment.user.id,
+        // user: {
+        //   id: comment.user.id,
+        //   name: `${comment.user.firstName} ${comment.user.lastName}`,
+        // },
         taggedUsers: comment.taggedUsers.map((user) => ({
           id: user.id,
           name: `${user.firstName} ${user.lastName}`,

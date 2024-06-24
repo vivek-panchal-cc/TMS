@@ -16,5 +16,7 @@ router.get('/details/:id', checkRole(['admin', 'user']), TaskController.getTaskB
 router.put('/update/:id', upload.single('attachment'), taskValidation, validationMiddleware, checkRole(['admin', 'user']), TaskController.updateTask);
 router.delete('/delete/:id', checkRole(['admin', 'user']), TaskController.deleteTask);
 router.get('/my-tasks', checkRole(['admin', 'user']), TaskController.getTasksByUser);
+router.patch("/:id/is-favourite", TaskController.setIsFavourite);
+router.patch("/:id/is-priority", TaskController.setIsPriority);
 
 export default router;

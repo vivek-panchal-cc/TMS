@@ -51,6 +51,12 @@ export class Task extends BaseEntity {
   @Column({ nullable: true })
   attachment?: string;
 
+  @Column({ default: false })
+  is_favourite: boolean;
+
+  @Column({ default: false })
+  is_priority: boolean;
+
   @ManyToOne(() => User)
   @JoinColumn({ name: "updated_by" })
   updated_by: User;

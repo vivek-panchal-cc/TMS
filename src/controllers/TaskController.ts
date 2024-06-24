@@ -287,7 +287,7 @@ export class TaskController {
           notification.type,
           notification.display_color,
           notification.task,
-          notification.project,
+          notification.project
         );
       }
 
@@ -390,7 +390,9 @@ export class TaskController {
         .leftJoinAndSelect("task.project", "project")
         .leftJoinAndSelect("task.label", "label")
         .leftJoinAndSelect("task.assignedUser", "assignedUser")
-        .leftJoinAndSelect("task.assignedBy", "assignedBy");
+        .leftJoinAndSelect("task.assignedBy", "assignedBy")
+        .orderBy("task.is_priority", "DESC")
+        .addOrderBy("task.updated_at", "DESC");
 
       if (taskName) {
         queryBuilder.andWhere("LOWER(task.taskName) LIKE LOWER(:taskName)", {
@@ -420,12 +422,9 @@ export class TaskController {
         label: task.label.labelName,
         assignedUser: `${task.assignedUser.firstName} ${task.assignedUser.lastName}`,
         assignedBy: `${task.assignedBy.firstName} ${task.assignedBy.lastName}`,
-        // created_at: task.created_at,
-        // updated_at: task.updated_at,
-        // deleted_at: task.deleted_at,
-        // created_by: task.created_by,
-        // updated_by: task.updated_by,
         is_active: task.is_active,
+        is_priority: task.is_priority,
+        is_favourite: task.is_favourite
       }));
 
       res.status(200).json({
@@ -462,7 +461,13 @@ export class TaskController {
       if (taskName) {
         searchCriteria.taskName = Like(`%${taskName}%`);
       }
-      const tasks = await taskRepository.find({ where: searchCriteria });
+      const tasks = await taskRepository.find({
+        where: searchCriteria,
+        order: {
+          is_priority: "DESC",
+          updated_at: "DESC",
+        },
+      });
 
       res.status(200).json({
         status_code: 200,
@@ -475,6 +480,82 @@ export class TaskController {
         status_code: 500,
         success: false,
         message: "Failed to fetch tasks",
+        error,
+      });
+    }
+  }
+
+  static async setIsFavourite(req: Request, res: Response) {
+    const { id } = req.params;
+
+    try {
+      const taskRepository = AppDataSource.getRepository(Task);
+      const task = await taskRepository.findOne({ where: { id: id } });
+
+      if (!task) {
+        return res.status(404).json({
+          status_code: 404,
+          success: false,
+          message: "Task not found",
+        });
+      }
+
+      task.is_favourite = task.is_favourite === false ? true : false;
+      task.updated_at = new Date();
+      if (req.user) {
+        task.updated_by = req.user;
+      }
+      await taskRepository.save(task);
+
+      res.status(200).json({
+        status_code: 200,
+        success: true,
+        message: "Task favourite status updated successfully",
+        // task,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status_code: 500,
+        success: false,
+        message: "Failed to update task favourite status",
+        error,
+      });
+    }
+  }
+
+  static async setIsPriority(req: Request, res: Response) {
+    const { id } = req.params;
+
+    try {
+      const taskRepository = AppDataSource.getRepository(Task);
+      const task = await taskRepository.findOne({ where: { id: id } });
+
+      if (!task) {
+        return res.status(404).json({
+          status_code: 404,
+          success: false,
+          message: "Task not found",
+        });
+      }
+
+      task.is_priority = task.is_priority === false ? true : false;
+      task.updated_at = new Date();
+      if (req.user) {
+        task.updated_by = req.user;
+      }
+      await taskRepository.save(task);
+
+      res.status(200).json({
+        status_code: 200,
+        success: true,
+        message: "Task priority status updated successfully",
+        // task,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status_code: 500,
+        success: false,
+        message: "Failed to update task priority status",
         error,
       });
     }

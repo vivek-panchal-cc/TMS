@@ -43,7 +43,7 @@ async function main() {
     {
       scheduled: true,
       timezone:
-        Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata", // Adjust timezone as per your requirements
+        Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Calcutta", // Adjust timezone as per your requirements
     }
   );
 

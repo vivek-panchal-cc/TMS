@@ -1,12 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, PrimaryColumn, BeforeInsert } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
-import { IsEmail, IsNotEmpty, IsNumber, Min, Length, IsDateString } from "class-validator";
-import { IsDateFormat } from "../validators/dateFormatValidator";
-
+import {
+  IsEmail,
+  IsNotEmpty,
+  Min,
+  Length,
+  IsDateString,
+} from "class-validator";
+import { Notification } from "./Notification";
+import { ulid } from "ulid";
 @Entity()
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: number;
+  @PrimaryColumn()
+  id: string;
 
   @Column({ unique: true })
   @IsEmail({}, { message: "Invalid email format" }) // Validate email format
@@ -39,10 +45,22 @@ export class User extends BaseEntity {
   @IsNotEmpty({ message: "Address is required" }) // Validate not empty
   address: string;
 
-  @Column()
+  @Column({ default: "user" })
   @IsNotEmpty()
   role: string;
 
   @Column({ default: 0 })
   tokenVersion: number;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "deleted_by" })
+  deleted_by: User;
+
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
+
+  @BeforeInsert()
+  generateUlid() {
+    this.id = ulid();
+  }
 }

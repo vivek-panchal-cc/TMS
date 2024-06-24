@@ -132,7 +132,17 @@ export class LabelController {
         status_code: 200,
         success: true,
         message: "Label updated successfully",
-        label,
+        label: {
+          id: label.id,
+          labelName: label.labelName,
+          color: label.color,
+          deleted_at: null,
+          created_at: label.created_at,
+          updated_at: label.updated_at,
+          created_by: label.created_by ? label.created_by : null,
+          updated_by: label.updated_by ? label.updated_by.id : null,
+          is_active: label.is_active,
+        },
       });
     } catch (error) {
       res.status(500).json({
@@ -164,7 +174,7 @@ export class LabelController {
       label.deleted_at = new Date();
 
       if (req.user) {
-        label.updated_by = req.user;
+        label.deleted_by = req.user;
       }
 
       await labelRepository.save(label);

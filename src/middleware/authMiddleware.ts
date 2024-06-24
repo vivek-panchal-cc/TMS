@@ -12,7 +12,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const token = isBearerToken ? authHeader.slice(7) : authHeader;
 
     try {
-        const verified = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number, tokenVersion: number };
+        const verified = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string, tokenVersion: number };
         const userRepository = AppDataSource.getRepository(User);
         const user = await userRepository.findOneBy({ id: verified.id, tokenVersion: verified.tokenVersion });
         if (!user) {

@@ -1,11 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, PrimaryColumn, BeforeInsert } from "typeorm";
 import { IsEmail, IsNotEmpty, IsNumber, Min, Length, IsDateString } from "class-validator";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
-
+import { ulid } from "ulid";
 @Entity()
 export class Project extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryColumn()
   id: string;
 
   @Column()
@@ -29,4 +29,13 @@ export class Project extends BaseEntity {
   @ManyToOne(() => User)
   @JoinColumn({ name: "created_by" })
   created_by: User;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "deleted_by" })
+  deleted_by: User;
+
+  @BeforeInsert()
+  generateUlid() {
+    this.id = ulid();
+  }
 }

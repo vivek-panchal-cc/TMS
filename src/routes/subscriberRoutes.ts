@@ -9,5 +9,6 @@ router.use(authMiddleware);
 router.post("/add", checkRole(["admin", "user"]), SubscriberController.addSubscriber);
 router.get("/:taskId/get-subscribers", checkRole(["admin", "user"]), SubscriberController.getSubscribersByTaskId);
 router.delete("/:id/remove-subscriber", checkRole(["admin", "user"]), SubscriberController.removeSubscriber);
+router.delete("/remove-bulk-subscriber", checkRole(["admin", "user"]), SubscriberController.removeBulkSubscribers);
 
 export default router;

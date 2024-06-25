@@ -199,6 +199,49 @@ class SubscriberController {
       });
     }
   }
+
+  static async removeBulkSubscribers(req: Request, res: Response) {
+    const { ids } = req.body; // Expecting an array of subscriber IDs
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        status_code: 400,
+        success: false,
+        message: "IDs must be a non-empty array",
+      });
+    }
+
+    try {
+      const subscriberRepository = AppDataSource.getRepository(Subscriber);
+
+      const subscribers = await subscriberRepository.find({
+        where: { id: In(ids) },
+      });
+
+      if (subscribers.length === 0) {
+        return res.status(404).json({
+          status_code: 404,
+          success: false,
+          message: "No subscribers found with the provided IDs",
+        });
+      }
+
+      await subscriberRepository.remove(subscribers);
+
+      res.status(200).json({
+        status_code: 200,
+        success: true,
+        message: "Subscribers removed successfully",
+      });
+    } catch (error) {
+      res.status(500).json({
+        status_code: 500,
+        success: false,
+        message: "Failed to remove subscribers",
+        error,
+      });
+    }
+  }
 }
 
 export default SubscriberController;

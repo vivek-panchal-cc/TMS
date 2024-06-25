@@ -6,12 +6,14 @@ import {
   JoinColumn,
   BeforeInsert,
   PrimaryColumn,
+  OneToMany,
 } from "typeorm";
 import { User } from "./User";
 import { Project } from "./Project";
 import { Label } from "./Label";
 import { BaseEntity } from "./BaseEntity";
 import { ulid } from "ulid";
+import { Subscriber } from "./Subscriber";
 @Entity()
 export class Task extends BaseEntity {
   @PrimaryColumn()
@@ -56,6 +58,9 @@ export class Task extends BaseEntity {
 
   @Column({ default: false })
   is_priority: boolean;
+
+  @OneToMany(() => Subscriber, (subscriber) => subscriber.task)
+  subscribers: Subscriber[];
 
   @ManyToOne(() => User)
   @JoinColumn({ name: "updated_by" })

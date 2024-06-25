@@ -424,7 +424,7 @@ export class TaskController {
         assignedBy: `${task.assignedBy.firstName} ${task.assignedBy.lastName}`,
         is_active: task.is_active,
         is_priority: task.is_priority,
-        is_favourite: task.is_favourite
+        is_favourite: task.is_favourite,
       }));
 
       res.status(200).json({

@@ -49,3 +49,12 @@ export const taskValidation = [
   body("status").notEmpty().withMessage("Status is required"),
   body('attachment').optional().isString().withMessage('Attachment must be a string'),
 ];
+
+export const subTaskValidation = [
+  body("name").notEmpty().withMessage("Sub Task name is required"),
+  body("status").notEmpty().withMessage("Status is required"),
+];
+
+export const taskDependencyValidation = [
+  body("dependency_id").notEmpty().withMessage("Dependency Task is required"),
+];

@@ -14,6 +14,8 @@ import { Label } from "./Label";
 import { BaseEntity } from "./BaseEntity";
 import { ulid } from "ulid";
 import { Subscriber } from "./Subscriber";
+import { Subtask } from "./SubTask";
+import { TaskDependency } from "./TaskDependency";
 @Entity()
 export class Task extends BaseEntity {
   @PrimaryColumn()
@@ -61,6 +63,18 @@ export class Task extends BaseEntity {
 
   @OneToMany(() => Subscriber, (subscriber) => subscriber.task)
   subscribers: Subscriber[];
+
+  @OneToMany(() => Subtask, (subtask) => subtask.task)
+  subtasks: Subtask[];
+
+  @OneToMany(() => TaskDependency, (taskDependency) => taskDependency.task)
+  dependencies: TaskDependency[];
+
+  @OneToMany(
+    () => TaskDependency,
+    (taskDependency) => taskDependency.dependency
+  )
+  dependents: TaskDependency[];
 
   @ManyToOne(() => User)
   @JoinColumn({ name: "updated_by" })
